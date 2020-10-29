@@ -1,0 +1,5 @@
+# Post Install: Add Maintenance public key for root user
+
+mkdir -p --mode=700 /root/.ssh
+curl http://$http_server/file/test.pub -o /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/authorized_keys

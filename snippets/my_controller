@@ -1,0 +1,35 @@
+#set $idata = $interfaces["ens33"]
+#set $ip    = $idata.get("ip_address", "")
+
+#if $ip in $name_servers
+
+## run docker dns
+curl http://$http_server/file/dns.tar -o /root/dns.tar
+echo "cat /root/dns.tar | docker load" >> /root/rundns.sh
+echo "docker run -d --name dns --restart always -p 53:53/udp mycoredns" >> /root/rundns.sh
+echo "rm /root/rundns.sh" >> /root/rundns.sh
+
+chmod a+x /etc/rc.local
+echo "bash /root/rundns.sh" >> /etc/rc.local
+
+wget http://$http_server/file/kube-flannel.yml -O /root/kube-flannel.yml
+
+## ohmyzsh
+yum install -y zsh git vim
+curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -o /root/zsh.sh
+curl http://$http_server/file/shrc -o /root/zshrc
+
+## openstack helm
+yum install -y python-pip jq gcc bind-utils python-devel bc
+
+mkdir -p /root/openstack
+cd /root/openstack
+wget http://$http_server/file/openstack.diff
+wget http://$http_server/file/label.cmd
+
+git clone https://github.com/openstack/openstack-helm
+git clone https://github.com/openstack/openstack-helm-infra
+
+helm repo add local http://localhost:8879/charts
+
+#end if

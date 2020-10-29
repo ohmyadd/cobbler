@@ -1,0 +1,4 @@
+wget http://$http_server/file/helm -O /usr/local/bin/helm
+wget http://$http_server/file/tiller -O /usr/local/bin/tiller
+chmod a+x /usr/local/bin/helm /usr/local/bin/tiller
+

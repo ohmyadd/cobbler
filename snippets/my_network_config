@@ -1,0 +1,18 @@
+#set $idata = $interfaces[$interfaces.keys()[0]]
+#set $ip    = $idata.get("ip_address", "")
+#set $devfile = "/etc/sysconfig/network-scripts/ifcfg-" + $interfaces.keys()[0]
+
+echo "$ip $hostname.$name_servers_search[0] $hostname" >> /etc/hosts
+echo "$hostname" > /etc/hostname
+echo "$http_server k8s.gcr.io #mirror" >> /etc/hosts
+echo "$http_server quay.io #mirror" >> /etc/hosts
+echo "$http_server gcr.io #mirror" >> /etc/hosts
+
+#if $name_servers_search
+echo -n "SEARCH=\"" >> $devfile
+  #for $nameserversearch in $name_servers_search
+echo -n "$nameserversearch " >> $devfile
+  #end for
+echo "\"" >> $devfile
+#end if
+

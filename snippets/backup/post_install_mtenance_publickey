@@ -1,0 +1,7 @@
+# Post Install: Add Maintenance public key for root user
+cd /root
+mkdir --mode=700 .ssh
+cat >> .ssh/authorized_keys << "PUBLIC_KEY"
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNZoCftEiYeq5AwYncmmjOro/k3FOTMTzkRYVJx82MNdlPnAuXyK/sR0Q4C8RQ8xrp79k5Kni1fKJl3/0vLCZTaHRMoWPZgfUV2Y6A9tbEdraZfzOzNYOrQxY0zwg0ie8sJzlNxfWBXjEB+TpGClf9ZbmBwuW8Gisag0xO7DBriM0ZlNEuOgFNDj9tzT95yfJ9CrHQWfNd5z7gI3WV2Zjob51PGrUOnjwHQT8M97olHmARew03n62OM7r4JqolWP0bSof21pbhXOYHhdE16d2RoX6gmHcdl2Zprep3mw15X8+gTpZtzr7UpmBZq1qsoUSPeFb5sVQJIYBaF1+uWzjV root@debian
+PUBLIC_KEY
+chmod 600 .ssh/authorized_keys

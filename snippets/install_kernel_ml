@@ -1,0 +1,45 @@
+yum install -y wget epel-release
+rm /etc/yum.repos.d/*
+wget http://mirrors.aliyun.com/repo/Centos-7.repo -O /etc/yum.repos.d/Centos-7.repo
+wget http://mirrors.aliyun.com/repo/epel-7.repo -O /etc/yum.repos.d/epel-7.repo
+wget http://$http_server/file/ceph.repo -O /etc/yum.repos.d/ceph.repo
+rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
+yum clean all
+yum makecache
+
+yum install -y kernel-ml --enablerepo=elrepo-kernel
+grub2-set-default 0
+
+yum install -y ceph-common
+
+export VERSION=18.09; curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
+systemctl enable docker
+
+wget http://$http_server/file/helm -O /usr/local/bin/helm
+wget http://$http_server/file/tiller -O /usr/local/bin/tiller
+chmod a+x /usr/local/bin/helm /usr/local/bin/tiller
+
+mkdir -p /etc/docker
+curl http://$http_server/file/daemon.json -o /etc/docker/daemon.json
+
+#set $idata = $interfaces["ens33"]
+#set $ip    = $idata.get("ip_address", "")
+
+#if $ip in $name_servers
+curl http://$http_server/file/dns.tar -o /root/dns.tar
+echo "cat /root/dns.tar | docker load" >> /root/rundns.sh
+echo "docker run -d --name dns --restart always -p 53:53/udp mycoredns" >> /root/rundns.sh
+echo "rm /root/rundns.sh" >> /root/rundns.sh
+
+chmod a+x /etc/rc.local
+echo "bash /root/rundns.sh" >> /etc/rc.local
+
+wget http://$http_server/file/kube-flannel.yml -O /root/kube-flannel.yml
+
+yum install -y zsh git vim
+curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -o /root/zsh.sh
+curl http://$http_server/file/shrc -o /root/zshrc
+
+yum install -y python-pip jq gcc bind-utils python-devel bc
+#end if

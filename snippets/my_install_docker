@@ -1,0 +1,5 @@
+export VERSION=18.09; curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
+systemctl enable docker
+
+mkdir -p /etc/docker
+curl http://$http_server/file/daemon.json -o /etc/docker/daemon.json
